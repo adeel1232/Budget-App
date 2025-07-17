@@ -1,0 +1,11 @@
+.graph {
+  border: 1px solid #ccc;
+  border-radius: 12px;
+  padding: 1rem;
+  background: #fff;
+  margin-bottom: 2rem;
+}
+.graph h2 {
+  text-align: center;
+  margin-bottom: 1rem;
+}
