@@ -43,7 +43,7 @@ const router = createBrowserRouter([
         children: [
           {
             path: "delete",
-            action: deleteBudget,
+            action: deleteBudget, // ✅ Use your real deleteBudget action here
           },
         ],
       },

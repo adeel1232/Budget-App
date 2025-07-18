@@ -1,42 +1,53 @@
-// rrd imports
 import { Link, useFetcher } from "react-router-dom";
-
-// library import
 import { TrashIcon } from "@heroicons/react/24/solid";
-
-// helper imports
 import {
   formatCurrency,
   formatDateToLocaleString,
   getAllMatchingItems,
 } from "../utils/helpers";
+import { useRef } from "react";
 
-const ExpenseItem = ({ expense, showBudget }) => {
+const ExpenseItem = ({ expense, showBudget = true }) => {
   const fetcher = useFetcher();
 
+  // Categories list
+  const categoriesRef = useRef([
+    "MEDICAL", "TRANSPORT", "OFFICE", "INSURANCE", "ELECTRONICS", "GROCERY",
+    "WEDDING", "INSTALLMENT", "PERSONAL", "FAMILY", "COMMITTEE", "GIFT",
+    "LOAN", "PAID", "MOBILE", "EDUCATION", "HEALTH", "FITNESS", "ENTERTAINMENT",
+    "SHOPPING", "RENT", "BILLS", "FOOD", "DRINK"
+  ]);
+
+  // Get matching budget
   const budget = getAllMatchingItems({
     category: "budgets",
     key: "id",
     value: expense.budgetId,
   })[0];
 
+  // Show original category if not in list
+  const formattedCategory = categoriesRef.current.includes(expense.category?.toUpperCase())
+    ? expense.category.toUpperCase()
+    : expense.category;
+
   return (
     <>
       <td>{expense.name}</td>
+      <td>{formattedCategory}</td>
       <td>{formatCurrency(expense.amount)}</td>
       <td>{formatDateToLocaleString(expense.createdAt)}</td>
-      {showBudget && (
+
+      {showBudget && budget && (
         <td>
           <Link
             to={`/budget/${budget.id}`}
-            style={{
-              "--accent": budget.color,
-            }}
+            style={{ "--accent": budget.color }}
           >
             {budget.name}
           </Link>
         </td>
       )}
+
       <td>
         <fetcher.Form method="post">
           <input type="hidden" name="_action" value="deleteExpense" />
@@ -53,4 +64,5 @@ const ExpenseItem = ({ expense, showBudget }) => {
     </>
   );
 };
+
 export default ExpenseItem;

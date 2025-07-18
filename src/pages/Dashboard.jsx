@@ -1,48 +1,48 @@
-
-// rrd imports
+// src/pages/Dashboard.jsx
+import React, { useState } from "react";
 import { Link, useLoaderData } from "react-router-dom";
 
-// components
+// Components
 import Intro from "../components/Intro";
 import AddBudgetForm from "../components/AddBudgetForm";
 import AddExpenseForm from "../components/AddExpenseForm";
 import BudgetItem from "../components/BudgetItem";
 import Table from "../components/Table";
 import BudgetPieChart from "../components/BudgetPieChart";
-import BudgetCard from "../components/BudgetCard";
-// helper functions
+import RecentExpensesChartSmall from "../components/RecentExpensesChartSmall"; // ✅ Only using this now
+
+// Utils
 import {
+  fetchData,
   createBudget,
   createExpense,
   deleteItem,
-  fetchData,
   waait,
 } from "../utils/helpers";
 
-// loader
+// 📦 Loader Function
 export function dashboardLoader() {
   const userName = fetchData("userName");
-  const budgets = fetchData("budgets");
-  const expenses = fetchData("expenses");
+  const budgets = fetchData("budgets") || [];
+  const expenses = fetchData("expenses") || [];
 
-  const budgetsWithExpenses = budgets?.map((budget) => ({
+  const budgetsWithExpenses = budgets.map((budget) => ({
     ...budget,
-    expenses: expenses?.filter((expense) => expense.budgetId === budget.id),
-  })) || [];
+    expenses: expenses.filter((expense) => expense.budgetId === budget.id),
+  }));
 
   return { userName, budgets: budgetsWithExpenses, expenses };
 }
 
-// action (must return at least null)
+// 🚀 Action Function
 export async function dashboardAction({ request }) {
   const formData = await request.formData();
   const { _action, ...values } = Object.fromEntries(formData);
-
   await waait();
 
   try {
     if (_action === "newUser") {
-      localStorage.setItem("userName", JSON.stringify(values.userName));
+      sessionStorage.setItem("userName", JSON.stringify(values.userName));
       return null;
     }
 
@@ -59,6 +59,8 @@ export async function dashboardAction({ request }) {
         name: values.newExpense,
         amount: values.newExpenseAmount,
         budgetId: values.newExpenseBudget,
+        category: values.expenseCategory, // ✅ Fixed
+        createdAt: new Date(values.createdAt).getTime(),
       });
       return null;
     }
@@ -67,14 +69,17 @@ export async function dashboardAction({ request }) {
       deleteItem({ key: "expenses", id: values.expenseId });
       return null;
     }
-
-  } catch (e) {
-    throw new Error("There was a problem processing your request");
+  } catch (error) {
+    throw new Error("There was a problem processing your request.");
   }
 }
 
-const Dashboard = () => {
+// 🎯 Dashboard Page Component
+export default function Dashboard() {
   const { userName, budgets, expenses } = useLoaderData();
+  const [showChart, setShowChart] = useState(false);
+
+  const handleToggleChart = () => setShowChart((prev) => !prev);
 
   return (
     <>
@@ -83,20 +88,29 @@ const Dashboard = () => {
           <h1>
             Welcome back, <span className="accent">{userName}</span>
           </h1>
+
           <div className="grid-sm">
-            {budgets && budgets.length > 0 ? (
+            {budgets.length > 0 ? (
               <div className="grid-lg">
+                {/* Forms */}
                 <div className="flex-lg">
                   <AddBudgetForm />
                   <AddExpenseForm budgets={budgets} />
                 </div>
 
-                {/* Budget Chart */}
-                <div className="chart-section">
-                  <h2>Budget Overview</h2>
-                  <BudgetPieChart budgets={budgets} />
-                </div>
+                {/* Toggleable Budget Chart */}
+                <button onClick={handleToggleChart} style={styles.button}>
+                  {showChart ? "Hide" : "View"} Existing Budgets Chart
+                </button>
 
+                {showChart && (
+                  <div className="chart-section">
+                    <h2>Budget Overview</h2>
+                    <BudgetPieChart budgets={budgets} />
+                  </div>
+                )}
+
+                {/* Budget List */}
                 <h2>Existing Budgets</h2>
                 <div className="budgets">
                   {budgets.map((budget) => (
@@ -104,14 +118,22 @@ const Dashboard = () => {
                   ))}
                 </div>
 
-                {expenses && expenses.length > 0 && (
+                {/* Recent Expenses Section */}
+                {expenses.length > 0 && (
                   <div className="grid-md">
                     <h2>Recent Expenses</h2>
+
+                    {/* ✅ Mini Pie Chart for Category */}
+                    <RecentExpensesChartSmall expenses={expenses} />
+
+                    {/* Table */}
                     <Table
                       expenses={expenses
                         .sort((a, b) => b.createdAt - a.createdAt)
                         .slice(0, 8)}
                     />
+
+                    {/* View All Link */}
                     {expenses.length > 8 && (
                       <Link to="expenses" className="btn btn--dark">
                         View all expenses
@@ -134,6 +156,18 @@ const Dashboard = () => {
       )}
     </>
   );
-};
+}
 
-export default Dashboard;
+// 🔵 Chart Toggle Button Style
+const styles = {
+  button: {
+    padding: "10px 20px",
+    backgroundColor: "#4D96FF",
+    color: "#fff",
+    border: "none",
+    borderRadius: "8px",
+    cursor: "pointer",
+    margin: "1rem 0",
+    fontSize: "1rem",
+  },
+};

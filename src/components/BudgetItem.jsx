@@ -1,10 +1,7 @@
-// rrd imports
+// src/components/BudgetItem.jsx
+
 import { Form, Link } from "react-router-dom";
-
-// library imports
 import { BanknotesIcon, TrashIcon } from "@heroicons/react/24/outline";
-
-// helper functions
 import {
   calculateSpentByBudget,
   formatCurrency,
@@ -17,7 +14,7 @@ const BudgetItem = ({ budget, showDelete = false }) => {
 
   return (
     <div
-      className="budget"
+      className="budget card"
       style={{
         "--accent": color,
       }}
@@ -26,13 +23,16 @@ const BudgetItem = ({ budget, showDelete = false }) => {
         <h3>{name}</h3>
         <p>{formatCurrency(amount)} Budgeted</p>
       </div>
+
       <progress max={amount} value={spent}>
         {formatPercentage(spent / amount)}
       </progress>
-      <div className="progress-text">
+
+      <div class="progress-text">
         <small>{formatCurrency(spent)} spent</small>
         <small>{formatCurrency(amount - spent)} remaining</small>
       </div>
+
       {showDelete ? (
         <div className="flex-sm">
           <Form
@@ -40,9 +40,7 @@ const BudgetItem = ({ budget, showDelete = false }) => {
             action="delete"
             onSubmit={(event) => {
               if (
-                !confirm(
-                  "Are you sure you want to permanently delete this budget?"
-                )
+                !confirm("Are you sure you want to permanently delete this budget?")
               ) {
                 event.preventDefault();
               }
@@ -65,4 +63,5 @@ const BudgetItem = ({ budget, showDelete = false }) => {
     </div>
   );
 };
+
 export default BudgetItem;

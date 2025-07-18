@@ -1,0 +1,12 @@
+.budget-with-chart {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+
+.chart-small {
+  flex-shrink: 0;
+  width: 250px;
+}
