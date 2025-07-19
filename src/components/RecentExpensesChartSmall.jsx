@@ -1,57 +1,48 @@
+// src/components/RecentExpensesChartSmall.jsx
 import React from "react";
-import { Pie } from "react-chartjs-2";
-import {
-  Chart as ChartJS,
-  ArcElement,
-  Tooltip,
-  Legend,
-  Title,
-} from "chart.js";
+import BudgetPieChartSmall from "./BudgetPieChartSmall";
 
-ChartJS.register(ArcElement, Tooltip, Legend, Title);
+const RecentExpensesChartSmall = ({ budgets, expenses }) => {
+  if (!expenses?.length || !budgets?.length) return null;
 
-const RecentExpensesChartSmall = ({ expenses = [] }) => {
-  const recentExpenses = expenses
-    .sort((a, b) => b.createdAt - a.createdAt)
-    .slice(0, 7);
+  const budget = budgets[0]; // First budget context
 
-  // Don't show chart if no expenses
-  if (recentExpenses.length === 0) return null;
-
-  const data = {
-    labels: recentExpenses.map((e) => e.name),
-    datasets: [
-      {
-        label: "Amount",
-        data: recentExpenses.map((e) => e.amount),
-        backgroundColor: [
-          "#FF6384", "#36A2EB", "#FFCE56", "#4BC0C0",
-          "#9966FF", "#FF9F40", "#8BC34A",
-        ],
-        borderWidth: 1,
-      },
-    ],
-  };
-
-  const options = {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-      title: {
-        display: true,
-        text: "Recent Expenses",
-        font: { size: 14 },
-      },
-      legend: {
-        position: "bottom",
-      },
-    },
-  };
+  // Format data for pie chart
+  const chartData = expenses.map((expense) => ({
+    name: expense.name,
+    value: Math.abs(Number(expense.amount)),
+  }));
 
   return (
-    <div style={{ width: "250px", height: "250px", margin: "auto" }}>
-      <Pie data={data} options={options} />
-    </div>
+    <section
+      className="chart-section"
+      style={{
+        background: "linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%)",
+        padding: "2rem",
+        margin: "2rem auto",
+        borderRadius: "1rem",
+        maxWidth: "420px",
+        boxShadow: "0 12px 30px rgba(0, 0, 0, 0.12)",
+        textAlign: "center",
+        border: "1px solid #e0e0e0",
+        transition: "all 0.3s ease-in-out",
+      }}
+    >
+      <h2
+        className="h3"
+        style={{
+          fontSize: "1.6rem",
+          fontWeight: "700",
+          color: "#2C3E50",
+          marginBottom: "1.5rem",
+          letterSpacing: "0.5px",
+        }}
+      >
+        {budget.name} Expense Breakdown
+      </h2>
+
+      <BudgetPieChartSmall chartData={chartData} />
+    </section>
   );
 };
 

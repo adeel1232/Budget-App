@@ -3,14 +3,20 @@ import { useLoaderData } from "react-router-dom";
 
 // library
 import { toast } from "react-toastify";
+import { useState } from "react";
 
 // components
 import AddExpenseForm from "../components/AddExpenseForm";
 import BudgetItem from "../components/BudgetItem";
 import Table from "../components/Table";
+import RecentExpensesChartSmall from "../components/RecentExpensesChartSmall";
 
 // helpers
-import { createExpense, deleteItem, getAllMatchingItems } from "../utils/helpers";
+import {
+  createExpense,
+  deleteItem,
+  getAllMatchingItems,
+} from "../utils/helpers";
 
 // loader
 export async function budgetLoader({ params }) {
@@ -64,24 +70,44 @@ export async function budgetAction({ request }) {
   }
 }
 
+// component
 const BudgetPage = () => {
   const { budget, expenses } = useLoaderData();
+  const [showChart, setShowChart] = useState(false);
 
   return (
-    <div
-      className="grid-lg"
-      style={{
-        "--accent": budget.color,
-      }}
-    >
+    <div className="grid-lg" style={{ "--accent": budget.color }}>
       <h1 className="h2">
         <span className="accent">{budget.name}</span> Overview
       </h1>
+
+      {/* Budget + Add Expense Form */}
       <div className="flex-lg">
         <BudgetItem budget={budget} showDelete={true} />
         <AddExpenseForm budgets={[budget]} />
       </div>
-      
+
+      {/* ✅ Toggle Chart Section */}
+      {expenses && expenses.length > 0 && (
+        <div className="grid-md">
+          <h2>Recent Expenses Breakdown</h2>
+          <button
+            className="btn"
+            onClick={() => setShowChart(!showChart)}
+          >
+            {showChart ? "Hide" : "Show"} Recent Expenses Chart
+          </button>
+
+          {showChart && (
+            <RecentExpensesChartSmall
+              budgets={[budget]}
+              expenses={expenses}
+            />
+          )}
+        </div>
+      )}
+
+      {/* ✅ Expenses Table */}
       {expenses && expenses.length > 0 && (
         <div className="grid-md">
           <h2>
@@ -93,4 +119,5 @@ const BudgetPage = () => {
     </div>
   );
 };
+
 export default BudgetPage;

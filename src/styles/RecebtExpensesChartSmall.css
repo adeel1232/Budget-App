@@ -1,0 +1,16 @@
+.chart-small-container {
+  background-color: #fff;
+  padding: 1.5rem;
+  border-radius: 1rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  max-width: 350px;
+  margin: 1.5rem auto;
+}
+
+.chart-small-container h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  text-align: center;
+  color: #333;
+  margin-bottom: 1rem;
+}
