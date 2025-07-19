@@ -3,7 +3,7 @@ import { useEffect, useRef } from "react";
 import { useFetcher } from "react-router-dom";
 import { PlusCircleIcon } from "@heroicons/react/24/solid";
 import expenseCategories from "../constants/expenseCategories";
-
+import CategorySelector from './CategorySelector';
 const AddExpenseForm = ({ budgets }) => {
   const fetcher = useFetcher();
   const isSubmitting = fetcher.state === "submitting";
@@ -11,7 +11,6 @@ const AddExpenseForm = ({ budgets }) => {
   const formRef = useRef();
   const focusRef = useRef();
 
-  // Reset form and focus input after submit
   useEffect(() => {
     if (!isSubmitting) {
       formRef.current.reset();
@@ -19,7 +18,6 @@ const AddExpenseForm = ({ budgets }) => {
     }
   }, [isSubmitting]);
 
-  // Form validation
   const validateForm = (e) => {
     const name = formRef.current.elements["newExpense"].value.trim();
     const amount = formRef.current.elements["newExpenseAmount"].value;
@@ -44,7 +42,6 @@ const AddExpenseForm = ({ budgets }) => {
       return false;
     }
 
-    // Save last expense to sessionStorage
     const expenseData = {
       name,
       amount,

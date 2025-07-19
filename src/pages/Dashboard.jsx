@@ -121,17 +121,13 @@ export default function Dashboard() {
                 {/* Recent Expenses Section */}
                 {expenses.length > 0 && (
                   <div className="grid-md">
-                    <h2>Recent Expenses</h2>
+                    <h2>Adeel</h2>
 
                     {/* ✅ Mini Pie Chart for Category */}
                     <RecentExpensesChartSmall expenses={expenses} />
 
                     {/* Table */}
-                    <Table
-                      expenses={expenses
-                        .sort((a, b) => b.createdAt - a.createdAt)
-                        .slice(0, 8)}
-                    />
+                  
 
                     {/* View All Link */}
                     {expenses.length > 8 && (
