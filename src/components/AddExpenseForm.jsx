@@ -1,35 +1,8 @@
+// src/components/AddExpenseForm.jsx
 import { useEffect, useRef } from "react";
 import { useFetcher } from "react-router-dom";
 import { PlusCircleIcon } from "@heroicons/react/24/solid";
-
-const categories = [
- 
-
-"MEDICAL" , 
- "TRANSPORT",  
- "OFFICE"  ,
- "INSURANCE",  
- "ELECTRONICS",  
- "GROCERY"  ,
- "WEDDING"  ,
- "INSTALLMENT",  
- "PERSONAL"  ,
- "FAMILY"  ,
- "COMMITTEE",  
- "GIFT"  ,
- "LOAN"  ,
- "PAID"  ,
- "MOBILE" , 
- "EDUCATION",  
- "HEALTH"  ,
- "FITNESS"  ,
-"ENTERTAINMENT",  
- "SHOPPING"  ,
- "RENT"  ,
- "BILLS"  ,
- "FOOD"  , "DRINK"  ,
-
-];
+import expenseCategories from "../constants/expenseCategories";
 
 const AddExpenseForm = ({ budgets }) => {
   const fetcher = useFetcher();
@@ -38,6 +11,7 @@ const AddExpenseForm = ({ budgets }) => {
   const formRef = useRef();
   const focusRef = useRef();
 
+  // Reset form and focus input after submit
   useEffect(() => {
     if (!isSubmitting) {
       formRef.current.reset();
@@ -45,6 +19,7 @@ const AddExpenseForm = ({ budgets }) => {
     }
   }, [isSubmitting]);
 
+  // Form validation
   const validateForm = (e) => {
     const name = formRef.current.elements["newExpense"].value.trim();
     const amount = formRef.current.elements["newExpenseAmount"].value;
@@ -69,7 +44,7 @@ const AddExpenseForm = ({ budgets }) => {
       return false;
     }
 
-    // ✅ Save to sessionStorage
+    // Save last expense to sessionStorage
     const expenseData = {
       name,
       amount,
@@ -97,7 +72,9 @@ const AddExpenseForm = ({ budgets }) => {
         ref={formRef}
         onSubmit={validateForm}
       >
+        {/* Expense Inputs */}
         <div className="expense-inputs">
+          {/* Expense Name */}
           <div className="grid-xs">
             <label htmlFor="newExpense">Expense Name</label>
             <input
@@ -110,6 +87,7 @@ const AddExpenseForm = ({ budgets }) => {
             />
           </div>
 
+          {/* Expense Amount */}
           <div className="grid-xs">
             <label htmlFor="newExpenseAmount">Amount</label>
             <input
@@ -123,18 +101,21 @@ const AddExpenseForm = ({ budgets }) => {
             />
           </div>
 
+          {/* Expense Category */}
           <div className="grid-xs">
             <label htmlFor="expenseCategory">Category</label>
             <select name="expenseCategory" id="expenseCategory" required>
               <option value="">-- Choose Category --</option>
-              {categories.map((cat) => (
-                <option key={cat} value={cat}>{cat}</option>
+              {expenseCategories.map((cat) => (
+                <option key={cat.name} value={cat.name}>
+                  {cat.icon} {cat.name}
+                </option>
               ))}
             </select>
           </div>
         </div>
 
-        {/* Budget Selector (hidden if only one) */}
+        {/* Budget Selector */}
         <div className="grid-xs" hidden={budgets.length === 1}>
           <label htmlFor="newExpenseBudget">Budget Category</label>
           <select name="newExpenseBudget" id="newExpenseBudget" required>
@@ -148,16 +129,17 @@ const AddExpenseForm = ({ budgets }) => {
           </select>
         </div>
 
+        {/* Hidden Inputs */}
         <input type="hidden" name="_action" value="createExpense" />
-        <button type="submit" className="btn btn--dark" disabled={isSubmitting}>
-         <input
-  type="date"
-  name="createdAt"
-  required
-  defaultValue={new Date().toISOString().split("T")[0]}
-/>
 
-         
+        {/* Date Picker + Submit */}
+        <button type="submit" className="btn btn--dark" disabled={isSubmitting}>
+          <input
+            type="date"
+            name="createdAt"
+            required
+            defaultValue={new Date().toISOString().split("T")[0]}
+          />
           {isSubmitting ? (
             <span>Submitting…</span>
           ) : (
@@ -166,7 +148,6 @@ const AddExpenseForm = ({ budgets }) => {
               <PlusCircleIcon width={20} />
             </>
           )}
-          
         </button>
       </fetcher.Form>
     </div>

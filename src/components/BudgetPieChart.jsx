@@ -1,85 +1,59 @@
-import React from 'react';
+import React from "react";
+import { Pie } from "react-chartjs-2";
 import {
   Chart as ChartJS,
   ArcElement,
   Tooltip,
   Legend,
-} from 'chart.js';
-import { Pie } from 'react-chartjs-2';
-import ChartDataLabels from 'chartjs-plugin-datalabels';
+  Title,
+} from "chart.js";
 
-// Register plugins
-ChartJS.register(ArcElement, Tooltip, Legend, ChartDataLabels);
+ChartJS.register(ArcElement, Tooltip, Legend, Title);
 
-const BudgetPieChart = ({ budgets }) => {
-  if (!budgets || budgets.length === 0) return null;
+const BudgetPieChartSmall = ({ budgets = [] }) => {
+  // Filter out budgets with no expenses
+  const filteredBudgets = budgets.filter(b => b.expenses?.length > 0);
 
-  const total = budgets.reduce((sum, b) => sum + b.amount, 0);
+  if (filteredBudgets.length === 0) return null;
 
   const data = {
-    labels: budgets.map(b => b.name),
+    labels: filteredBudgets.map(b => b.name),
     datasets: [
       {
-        data: budgets.map(b => b.amount),
+        label: "Total Spent",
+        data: filteredBudgets.map(b =>
+          b.expenses.reduce((total, exp) => total + (exp.amount || 0), 0)
+        ),
         backgroundColor: [
-          '#FF6B6B', '#6BCB77', '#4D96FF',
-          '#FFC75F', '#A66DD4', '#FFA07A'
+          "#FF6384", "#36A2EB", "#FFCE56", "#4BC0C0",
+          "#9966FF", "#FF9F40", "#8BC34A", "#D2691E",
+          "#6495ED", "#FFD700", "#20B2AA", "#A0522D"
         ],
-        borderColor: '#fff',
-        borderWidth: 2,
+        borderWidth: 1,
       },
     ],
   };
 
   const options = {
     responsive: true,
+    maintainAspectRatio: false,
     plugins: {
-      legend: {
-        position: 'bottom',
-        labels: {
-          boxWidth: 16,
-          padding: 10,
-          color: '#333',
-          font: { size: 13 },
-        },
+      title: {
+        display: true,
+        text: "Total Spent per Budget",
+        font: { size: 14 },
       },
-      datalabels: {
-        color: '#fff',
-        formatter: (value, context) => {
-          const percent = ((value / total) * 100).toFixed(1);
-          return `${percent}%`;
-        },
-        font: {
-          size: 12,
-          weight: 'bold',
-        },
+      legend: {
+        position: "bottom",
       },
     },
   };
 
   return (
-    <div style={styles.container}>
-      <h3 style={styles.heading}>Budget Overview</h3>
+    <div style={{ width: "300px", height: "300px", margin: "auto" }}>
       <Pie data={data} options={options} />
     </div>
   );
 };
 
-const styles = {
-  container: {
-    maxWidth: '380px',
-    background: '#ffffff',
-    margin: '2rem auto',
-    padding: '1rem',
-    borderRadius: '12px',
-    boxShadow: '0 4px 12px rgba(0,0,0,0.05)',
-  },
-  heading: {
-    textAlign: 'center',
-    marginBottom: '1rem',
-    fontSize: '1.1rem',
-    color: '#444',
-  },
-};
-
-export default BudgetPieChart;
+export default BudgetPieChartSmall;

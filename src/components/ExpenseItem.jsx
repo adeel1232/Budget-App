@@ -6,17 +6,13 @@ import {
   getAllMatchingItems,
 } from "../utils/helpers";
 import { useRef } from "react";
+import expenseCategories from "../constants/expenseCategories";
 
 const ExpenseItem = ({ expense, showBudget = true }) => {
   const fetcher = useFetcher();
 
-  // Categories list
-  const categoriesRef = useRef([
-    "MEDICAL", "TRANSPORT", "OFFICE", "INSURANCE", "ELECTRONICS", "GROCERY",
-    "WEDDING", "INSTALLMENT", "PERSONAL", "FAMILY", "COMMITTEE", "GIFT",
-    "LOAN", "PAID", "MOBILE", "EDUCATION", "HEALTH", "FITNESS", "ENTERTAINMENT",
-    "SHOPPING", "RENT", "BILLS", "FOOD", "DRINK"
-  ]);
+  // Store categories in ref to avoid re-initialization
+  const categoriesRef = useRef(expenseCategories);
 
   // Get matching budget
   const budget = getAllMatchingItems({

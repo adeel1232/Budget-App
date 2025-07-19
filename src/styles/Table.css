@@ -1,0 +1,25 @@
+.badge {
+  padding: 0.25rem 0.5rem;
+  border-radius: 9999px;
+  color: white;
+  font-size: 0.875rem;
+  text-transform: capitalize;
+}
+
+.badge--medical {
+  background-color: #f87171;
+}
+
+.badge--grocery {
+  background-color: #34d399;
+}
+
+.badge--transport {
+  background-color: #60a5fa;
+}
+
+.badge--education {
+  background-color: #a78bfa;
+}
+
+/* Add more as needed */

@@ -81,6 +81,7 @@ const BudgetPage = () => {
         <BudgetItem budget={budget} showDelete={true} />
         <AddExpenseForm budgets={[budget]} />
       </div>
+      
       {expenses && expenses.length > 0 && (
         <div className="grid-md">
           <h2>
