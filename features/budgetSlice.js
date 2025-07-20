@@ -1,17 +1,28 @@
+// src/redux/slices/budgetSlice.js
 import { createSlice } from '@reduxjs/toolkit';
+
+const initialState = {
+  budgets: [],
+};
 
 const budgetSlice = createSlice({
   name: 'budget',
-  initialState: [],
+  initialState,
   reducers: {
-    addBudget: (state, action) => {
-      state.push(action.payload);
+    createBudget: (state, action) => {
+      const { name, amount } = action.payload;
+      state.budgets.push({
+        id: Date.now(),
+        name,
+        amount: Math.abs(Number(amount)),
+        createdAt: new Date().toISOString(),
+      });
     },
     deleteBudget: (state, action) => {
-      return state.filter(b => b.id !== action.payload);
+      state.budgets = state.budgets.filter(b => b.id !== action.payload);
     },
   },
 });
 
-export const { addBudget, deleteBudget } = budgetSlice.actions;
+export const { createBudget, deleteBudget } = budgetSlice.actions;
 export default budgetSlice.reducer;

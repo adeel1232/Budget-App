@@ -1,16 +1,20 @@
-import React from "react";
-import PropTypes from "prop-types";
+// src/components/BudgetCard.jsx
 
-const BudgetCard = ({ budget }) => {
-  if (!budget) return null;
+import React from "react";
+import { useSelector } from "react-redux";
+
+const BudgetCard = ({ budgetId }) => {
+  const budget = useSelector((state) =>
+    state.budgets.items.find((b) => b.id === budgetId)
+  );
+
+  if (!budget) return <p>Budget not found.</p>;
 
   const { name = "Unnamed Budget", amount = 0, expenses = [] } = budget;
 
-  // Calculate total spent
   const totalSpent = expenses.reduce((total, exp) => total + (exp.amount || 0), 0);
   const remaining = amount - totalSpent;
 
-  // Calculate percentage used
   const percentage = amount > 0
     ? Math.min((totalSpent / amount) * 100, 100).toFixed(1)
     : 0;
@@ -37,22 +41,6 @@ const BudgetCard = ({ budget }) => {
   );
 };
 
-// Prop types for validation
-BudgetCard.propTypes = {
-  budget: PropTypes.shape({
-    name: PropTypes.string,
-    amount: PropTypes.number,
-    expenses: PropTypes.arrayOf(
-      PropTypes.shape({
-        id: PropTypes.string,
-        name: PropTypes.string,
-        amount: PropTypes.number,
-      })
-    ),
-  }),
-};
-
-// Inline styles (optional)
 const styles = {
   card: {
     padding: "1rem",
