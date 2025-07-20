@@ -128,7 +128,7 @@ export default function Dashboard() {
                 {/* Recent Expenses Section */}
                 {expenses.length > 0 && (
                   <div className="grid-md">
-                    <h2>Adeel</h2>
+                    
 
                     {/* ✅ Mini Pie Chart for Category */}
                     <RecentExpensesChartSmall expenses={expenses} />
