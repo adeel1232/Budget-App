@@ -46,11 +46,19 @@ export async function budgetAction({ request }) {
 
   if (_action === "createExpense") {
     try {
+      
       createExpense({
         name: values.newExpense,
         amount: values.newExpenseAmount,
+        category:values.expenseCategory,
         budgetId: values.newExpenseBudget,
       });
+      console.log("called from budget",{
+        name: values.newExpense,
+        amount: values.newExpenseAmount,
+        category:values.expenseCategory,
+        budgetId: values.newExpenseBudget,
+      })
       return toast.success(`Expense ${values.newExpense} created!`);
     } catch (e) {
       throw new Error("There was a problem creating your expense.");

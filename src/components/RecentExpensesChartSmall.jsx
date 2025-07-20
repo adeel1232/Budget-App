@@ -1,23 +1,15 @@
 // src/components/RecentExpensesChartSmall.jsx
 import React from "react";
 import BudgetPieChartSmall from "./BudgetPieChartSmall";
-import expenseCategories from "../constants/expenseCategories";
 
 const RecentExpensesChartSmall = ({ budgets, expenses }) => {
   if (!expenses?.length || !budgets?.length) return null;
 
-  const validCategoryNames = expenseCategories.map(cat => cat.name);
-
-  // Filter only valid category expenses
-  const filteredExpenses = expenses.filter(exp =>
-    validCategoryNames.includes(exp.category)
-  );
-
   const budget = budgets[0]; // First budget context
 
   // Format data for pie chart
-  const chartData = filteredExpenses.map((expense) => ({
-    name: expense.category, // Or use expense.name if you prefer
+  const chartData = expenses.map((expense) => ({
+    name: expense.name,
     value: Math.abs(Number(expense.amount)),
   }));
 

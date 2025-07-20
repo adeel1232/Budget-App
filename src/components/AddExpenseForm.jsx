@@ -48,6 +48,7 @@ const AddExpenseForm = ({ budgets }) => {
       category,
       budget: budgetName,
     };
+    console.log("saving expense",expenseData)
     sessionStorage.setItem("lastExpense", JSON.stringify(expenseData));
 
     return true;

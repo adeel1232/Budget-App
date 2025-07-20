@@ -54,3 +54,10 @@ const ExpensesByCategory = ({ expenses }) => {
 };
 
 export default ExpensesByCategory;
+createExpense({
+  name: values.newExpense,
+  amount: values.newExpenseAmount,
+  budgetId: values.newExpenseBudget,
+  category: values.expenseCategory, // should be just "Food"
+  createdAt: new Date(values.createdAt).getTime(),
+});

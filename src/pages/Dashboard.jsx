@@ -7,8 +7,9 @@ import Intro from "../components/Intro";
 import AddBudgetForm from "../components/AddBudgetForm";
 import AddExpenseForm from "../components/AddExpenseForm";
 import BudgetItem from "../components/BudgetItem";
+import Table from "../components/Table";
 import BudgetPieChart from "../components/BudgetPieChart";
-import RecentExpensesChartSmall from "../components/RecentExpensesChartSmall";
+import RecentExpensesChartSmall from "../components/RecentExpensesChartSmall"; // ✅ Only using this now
 
 // Utils
 import {
@@ -19,7 +20,7 @@ import {
   waait,
 } from "../utils/helpers";
 
-// 📦 Loader
+// 📦 Loader Function
 export function dashboardLoader() {
   const userName = fetchData("userName");
   const budgets = fetchData("budgets") || [];
@@ -33,7 +34,7 @@ export function dashboardLoader() {
   return { userName, budgets: budgetsWithExpenses, expenses };
 }
 
-// 🚀 Action Handler
+// 🚀 Action Function
 export async function dashboardAction({ request }) {
   const formData = await request.formData();
   const { _action, ...values } = Object.fromEntries(formData);
@@ -58,9 +59,16 @@ export async function dashboardAction({ request }) {
         name: values.newExpense,
         amount: values.newExpenseAmount,
         budgetId: values.newExpenseBudget,
-        category: values.expenseCategory,
+        category: values.expenseCategory, // ✅ Fixed
         createdAt: new Date(values.createdAt).getTime(),
       });
+      console.log("called from dashboard",{
+       name: values.newExpense,
+        amount: values.newExpenseAmount,
+        budgetId: values.newExpenseBudget,
+        category: values.expenseCategory, // ✅ Fixed
+        createdAt: new Date(values.createdAt).getTime(),
+      })
       return null;
     }
 
@@ -73,7 +81,7 @@ export async function dashboardAction({ request }) {
   }
 }
 
-// 🧠 Dashboard Component
+// 🎯 Dashboard Page Component
 export default function Dashboard() {
   const { userName, budgets, expenses } = useLoaderData();
   const [showChart, setShowChart] = useState(false);
@@ -97,7 +105,7 @@ export default function Dashboard() {
                   <AddExpenseForm budgets={budgets} />
                 </div>
 
-                {/* Toggle Chart */}
+                {/* Toggleable Budget Chart */}
                 <button onClick={handleToggleChart} style={styles.button}>
                   {showChart ? "Hide" : "View"} Existing Budgets Chart
                 </button>
@@ -117,11 +125,23 @@ export default function Dashboard() {
                   ))}
                 </div>
 
-                {/* Recent Expenses Chart only (Table removed) */}
+                {/* Recent Expenses Section */}
                 {expenses.length > 0 && (
                   <div className="grid-md">
-                    <h2>Recent Expenses</h2>
+                    <h2>Adeel</h2>
+
+                    {/* ✅ Mini Pie Chart for Category */}
                     <RecentExpensesChartSmall expenses={expenses} />
+
+                    {/* Table */}
+                  
+
+                    {/* View All Link */}
+                    {expenses.length > 8 && (
+                      <Link to="expenses" className="btn btn--dark">
+                        View all expenses
+                      </Link>
+                    )}
                   </div>
                 )}
               </div>
@@ -141,7 +161,7 @@ export default function Dashboard() {
   );
 }
 
-// 🔷 Button Style
+// 🔵 Chart Toggle Button Style
 const styles = {
   button: {
     padding: "10px 20px",

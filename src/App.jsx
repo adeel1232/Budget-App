@@ -47,7 +47,6 @@ const router = createBrowserRouter([
           },
         ],
       },
-      
       {
         path: "expenses",
         element: <ExpensesPage />,

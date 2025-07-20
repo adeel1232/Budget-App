@@ -42,7 +42,7 @@ export const createBudget = ({ name, amount, type = "expense" }) => {
   return newItem;
 };
 
-export const createExpense = ({ name, amount, budgetId }) => {
+export const createExpense = ({ name, amount, budgetId,category }) => {
   const numericAmount = Math.abs(+amount);
   const newItem = {
     id: crypto.randomUUID(),
@@ -50,6 +50,7 @@ export const createExpense = ({ name, amount, budgetId }) => {
     createdAt: Date.now(),
     amount: numericAmount,
     budgetId,
+    category
   };
   const existingExpenses = fetchData("expenses") ?? [];
   sessionStorage.setItem("expenses", JSON.stringify([...existingExpenses, newItem]));
