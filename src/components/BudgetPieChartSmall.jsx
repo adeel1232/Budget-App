@@ -1,46 +1,65 @@
 import React from "react";
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
 
-// 🌈 Beautiful modern color palette
+// 🎨 Unique color palette
 const COLORS = [
   "#FF6B6B", "#6BCB77", "#4D96FF", "#FFD93D", "#FF9CEE",
   "#845EC2", "#00C9A7", "#F9F871", "#FF9671", "#00B8A9",
 ];
 
-// 📊 Function to combine duplicate categories and sum their values
+// 🔁 Combine categories with same name (case-insensitive)
 const combineDuplicateCategories = (data) => {
   const combined = {};
-  
-  data.forEach(item => {
-    const key = item.name.toLowerCase().trim(); // Normalize the category name
+
+  data.forEach((item) => {
+    const key = item.category.trim().toLowerCase(); // normalize key
     if (!combined[key]) {
-      combined[key] = { ...item };
+      combined[key] = {
+        name: item.category.charAt(0).toUpperCase() + item.category.slice(1).toLowerCase(),
+        value: item.value,
+      };
     } else {
       combined[key].value += item.value;
     }
   });
-  
+
   return Object.values(combined);
 };
 
-// 🧁 Styled pie chart component
+// 🎨 Generate color map based on unique category name
+const getColorMap = (data) => {
+  const colorMap = {};
+  let colorIndex = 0;
+
+  data.forEach((item) => {
+    const name = item.name;
+    if (!colorMap[name]) {
+      colorMap[name] = COLORS[colorIndex % COLORS.length];
+      colorIndex++;
+    }
+  });
+
+  return colorMap;
+};
+
+// 📈 Budget pie chart component
 const BudgetPieChartSmall = ({ chartData }) => {
-  if (!chartData || !chartData.length) {
+  if (!chartData || chartData.length === 0) {
     return (
       <div style={{
         height: 300,
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        color: '#666'
+        color: '#666',
       }}>
         <p>No data available</p>
       </div>
     );
   }
 
-  // Combine duplicate categories
   const processedData = combineDuplicateCategories(chartData);
+  const colorMap = getColorMap(processedData);
 
   return (
     <ResponsiveContainer width="100%" height={300}>
@@ -53,24 +72,21 @@ const BudgetPieChartSmall = ({ chartData }) => {
           cy="50%"
           outerRadius={100}
           labelLine={false}
-          label={({ percent }) => `${(percent * 100).toFixed(0)}%`} // Only show percentage
+          label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
         >
           {processedData.map((entry, index) => (
             <Cell
               key={`cell-${index}`}
-              fill={COLORS[index % COLORS.length]}
-              stroke="#ffffff"
+              fill={colorMap[entry.name]}
+              stroke="#fff"
               strokeWidth={2}
             />
           ))}
         </Pie>
         <Tooltip
-          formatter={(value, name) => [
-            `$${value.toFixed(2)}`, 
-            name
-          ]}
+          formatter={(value, name) => [`$${value.toFixed(2)}`, name]}
           contentStyle={{
-            backgroundColor: "#ffffff",
+            backgroundColor: "#fff",
             border: "1px solid #ddd",
             borderRadius: "8px",
             fontSize: "0.9rem",

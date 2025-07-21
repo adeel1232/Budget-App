@@ -9,7 +9,7 @@ const RecentExpensesChartSmall = ({ budgets, expenses }) => {
 
   // Format data for pie chart
   const chartData = expenses.map((expense) => ({
-    name: expense.name,
+    category: expense.category,
     value: Math.abs(Number(expense.amount)),
   }));
 
