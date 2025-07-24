@@ -1,48 +1,48 @@
-// src/components/RecentExpensesChartSmall.jsx
-import React from "react";
-import BudgetPieChartSmall from "./BudgetPieChartSmall";
+import { PieChart, Pie, Cell, Tooltip } from "recharts";
+import { useState } from "react";
 
-const RecentExpensesChartSmall = ({ budgets, expenses }) => {
-  if (!expenses?.length || !budgets?.length) return null;
 
-  const budget = budgets[0]; // First budget context
+// Custom color array
+const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#AB63FA", "#F36265"];
 
-  // Format data for pie chart
-  const chartData = expenses.map((expense) => ({
-    category: expense.category,
-    value: Math.abs(Number(expense.amount)),
+const RecentExpensesChartSmall = ({ expenses }) => {
+  const [hovered, setHovered] = useState(null);
+
+  const total = expenses.reduce((sum, expense) => sum + Number(expense.amount), 0);
+
+  const data = expenses.map((expense) => ({
+    name: expense.category,
+    value: Number(expense.amount),
+    percentage: ((Number(expense.amount) / total) * 100).toFixed(1),
   }));
 
   return (
-    <section
-      className="chart-section"
-      style={{
-        background: "linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%)",
-        padding: "2rem",
-        margin: "2rem auto",
-        borderRadius: "1rem",
-        maxWidth: "420px",
-        boxShadow: "0 12px 30px rgba(0, 0, 0, 0.12)",
-        textAlign: "center",
-        border: "1px solid #e0e0e0",
-        transition: "all 0.3s ease-in-out",
-      }}
-    >
-      <h2
-        className="h3"
-        style={{
-          fontSize: "1.6rem",
-          fontWeight: "700",
-          color: "#2C3E50",
-          marginBottom: "1.5rem",
-          letterSpacing: "0.5px",
-        }}
-      >
-        {budget.name} Expense Breakdown
-      </h2>
+    <div className="chart-container">
+      <PieChart width={300} height={300}>
+        <Pie
+          data={data}
+          cx="50%"
+          cy="50%"
+          outerRadius={100}
+          dataKey="value"
+          onMouseEnter={(data, index) => setHovered(data.payload)}
+          onMouseLeave={() => setHovered(null)}
+        >
+          {data.map((entry, index) => (
+            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+          ))}
+        </Pie>
+        <Tooltip />
+      </PieChart>
 
-      <BudgetPieChartSmall chartData={chartData} />
-    </section>
+      {/* Hover Info Box */}
+      {hovered && (
+        <div className="hover-info">
+          <strong>Category:</strong> {hovered.name} <br />
+          <strong>Spent:</strong> {hovered.percentage}%
+        </div>
+      )}
+    </div>
   );
 };
 

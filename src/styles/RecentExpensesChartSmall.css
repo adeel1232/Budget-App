@@ -1,0 +1,17 @@
+.chart-container {
+  position: relative;
+}
+
+.hover-info {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: white;
+  color: black;
+  padding: 0.5rem;
+  border-radius: 10px;
+  box-shadow: 0 0 5px rgba(0,0,0,0.2);
+  font-size: 0.9rem;
+  pointer-events: none;
+  z-index: 10;
+}
